@@ -5,7 +5,6 @@ const flash = require('connect-flash');
 const session = require('express-session');
 
 const app = express();
-var path = require('path');
 
 // DB Config
 const db = require('./config/keys').MongoURI;
@@ -15,15 +14,12 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB Connected..'))
     .catch(err => console.log(err))
 
-var path = require('path');
-
 // EJS
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
 // BodyParser
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 
 // Express Session
 app.use(session({
@@ -39,6 +35,7 @@ app.use(flash());
 app.use((req, res, next ) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
+    next();
 })
 
 // Routes
